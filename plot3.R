@@ -1,4 +1,4 @@
-## plot1
+## plot3
 
 # We start this script by checking if the txt file is in the current directory
 # or in a subdirectory. If no, it is downloaded.
@@ -29,13 +29,23 @@ if(length(datafile) == 0){
 data$Date <- as.Date(data$Date,  format = "%d/%m/%Y")
 datasub <- subset(data, Date == "2007-02-01" | Date == "2007-02-02")
 
-# The 'Global_active_power' column is reformated
-datasub$Global_active_power <- as.numeric(datasub$Global_active_power)
+# The 'Time' column is reformated using the 'Date' column
+datasub$Time <- strptime(paste(datasub$Date, datasub$Time), 
+                         format = "%Y-%m-%d %H:%M:%S")
+
+# The 'Sub_metering_X' columns are reformated
+datasub$Sub_metering_1 <- as.numeric(datasub$Sub_metering_1)
+datasub$Sub_metering_2 <- as.numeric(datasub$Sub_metering_2)
+datasub$Sub_metering_3 <- as.numeric(datasub$Sub_metering_3)
 
 # Plot
-hist(datasub$Global_active_power, main = "Global Active Power", col = "red", 
-     xlab = "Global Active Power (kilowatts)")
+with(datasub, plot(Time, Sub_metering_1, type = "l", 
+                   xlab = "" , ylab = "Energy sub melting"))
+with(datasub, lines(Time, Sub_metering_2, col = "red"))
+with(datasub, lines(Time, Sub_metering_3, col = "Blue"))
+legend("topright", c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), 
+       lty = 1, lwd = 1, col = c("black", "red", "blue"), y.intersp = 0.5)
 
 # Export to png format
-dev.copy(png, file = "plot1.png", width = 480, height = 480)
+dev.copy(png, file = "plot3.png", width = 480, height = 480)
 dev.off()

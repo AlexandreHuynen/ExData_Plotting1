@@ -1,4 +1,4 @@
-## plot1
+## plot2
 
 # We start this script by checking if the txt file is in the current directory
 # or in a subdirectory. If no, it is downloaded.
@@ -29,13 +29,19 @@ if(length(datafile) == 0){
 data$Date <- as.Date(data$Date,  format = "%d/%m/%Y")
 datasub <- subset(data, Date == "2007-02-01" | Date == "2007-02-02")
 
+# The 'Time' column is reformated using the 'Date' column
+datasub$Time <- strptime(paste(datasub$Date, datasub$Time), 
+                         format = "%Y-%m-%d %H:%M:%S")
+
 # The 'Global_active_power' column is reformated
 datasub$Global_active_power <- as.numeric(datasub$Global_active_power)
 
+
 # Plot
-hist(datasub$Global_active_power, main = "Global Active Power", col = "red", 
-     xlab = "Global Active Power (kilowatts)")
+with(datasub, plot(Time, Global_active_power, type = "l",
+     xlab = "" , ylab = "Global Active Power (kilowatts)"))
+
 
 # Export to png format
-dev.copy(png, file = "plot1.png", width = 480, height = 480)
+dev.copy(png, file = "plot2.png", width = 480, height = 480)
 dev.off()
